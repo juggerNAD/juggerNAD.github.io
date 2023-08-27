@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+  }
+  #container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+  h1 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    color: #4caf50;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+  input[type="date"],
+  input[type="time"],
+  input[type="email"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 5px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #4caf50;
+    color: white;
+  }
+  tr:hover {
+    background-color: #e0e0e0;
+  }
+  .button {
+    display: block;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  .clear {
+    background-color: red;
+  }
+</style>
+<title>Time Tracker</title>
+</head>
+<body>
+
+<div id="container">
+  <h1>The Door Digital</h1>
+  
+  <label for="date">Date:</label>
+  <input type="date" id="date" required>
+  
+  <label for="time-in">Time In:</label>
+  <input type="time" id="time-in" required>
+  
+  <label for="time-out">Time Out:</label>
+  <input type="time" id="time-out" required>
+  
+  <button class="button" onclick="addEntry()">Log Time</button>
+  
+  <table id="time-table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">Total Hours:</td>
+        <td id="total-hours">0</td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <button class="button clear" onclick="clearTable()">Clear Table</button>
+  
+  <label for="email">Email:</label>
+  <input type="email" id="email">
+  
+  <button class="button" onclick="sendEmail()">Send Email</button>
+</div>
+
+<script>
+  let totalHours = 0;
+
+  function addEntry() {
+    const date = document.getElementById('date').value;
+    const timeIn = document.getElementById('time-in').value;
+    const timeOut = document.getElementById('time-out').value;
+    const tbody = document.getElementById('time-table').getElementsByTagName('tbody')[0];
+    const newRow = tbody.insertRow();
+
+    newRow.insertCell(0).textContent = date;
+    newRow.insertCell(1).textContent = timeIn;
+    newRow.insertCell(2).textContent = timeOut;
+
+    totalHours += getHoursDifference(timeIn, timeOut);
+    document.getElementById('total-hours').textContent = totalHours.toFixed(2);
+  }
+
+  function getHoursDifference(timeIn, timeOut) {
+    const [timeInHour, timeInMinute] = timeIn.split(':').map(Number);
+    const [timeOutHour, timeOutMinute] = timeOut.split(':').map(Number);
+
+    const inMinutes = (timeInHour * 60) + timeInMinute;
+    const outMinutes = (timeOutHour * 60) + timeOutMinute;
+
+    let difference = outMinutes - inMinutes;
+
+    if (difference < 0) {
+      difference += 24 * 60;  // adjust for crossing midnight
+    }
+
+    return difference / 60;
+  }
+
+  function clearTable() {
+    const tbody = document.getElementById('time-table').getElementsByTagName('tbody')[0];
+    tbody.innerHTML = '';
+    totalHours = 0;
+    document.getElementById('total-hours').textContent = '0';
+  }
+
+  function sendEmail() {
+    const email = document.getElementById('email').value;
+    console.log(`Sending data to ${email}`);
+    // Implement email sending functionality here.
+  }
+</script>
+
+</body>
+</html>
